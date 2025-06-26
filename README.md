@@ -13,6 +13,9 @@ We welcome contributions to the Koan Protocol Subgraphs repository! Here's how y
 - pnpm (v7 or later)
 - Git
 
+### Goldsky Docs Links
+Supported network Links: https://docs.goldsky.com/chains/supported-networks
+
 ### Development Setup
 
 1. **Fork the repository**

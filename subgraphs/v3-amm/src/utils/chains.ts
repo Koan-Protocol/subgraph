@@ -16,7 +16,7 @@ export enum ChainId {
 // subgraph does not support string enums, hence these constants
 
 const BASE_SEPOLIA_NETWORK_NAME = "base-sepolia";
-const LISK_SEPOLIA_NETWORK_NAME = "lisk-sepolia";
+const LISK_SEPOLIA_NETWORK_NAME = "lisk-sepolia-testnet";
 
 // Note: All token and pool addresses should be lowercased!
 export class SubgraphConfig {
@@ -69,38 +69,36 @@ export function getSubgraphConfig(): SubgraphConfig {
     return {
       factoryAddress: "0xbdf65e7100B459d402b714c25CbeAB5b4CB4dDc2",
       stablecoinWrappedNativePoolAddress:
-        "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d", // WETH-USDC 0.3% pool
+        "0xd38601418112E4C39EBFC8d083B330a7964F803F", // WETH-USDC 0.3% pool
       stablecoinIsToken0: false,
       wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // WETH
       minimumNativeLocked: BigDecimal.fromString("20"),
       stablecoinAddresses: [
-        "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8", // USDC
-        "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1", // DAI
-        "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", // USDT
+        "0x27eaAf3FD3b508f0E0261F274B2574f15B92c38e", // USDC
+        "0x26F653f8b51FA2F6c39eD6adf1A9401B8DBA8819", // DAI
       ],
       whitelistTokens: [
-        "0x82af49447d8a07e3bd95bd0d56f35241523fbab1", // WETH
-        "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8", // USDC
-        "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1", // DAI
-        "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", // USDT
+        "0x4200000000000000000000000000000000000006", // WETH
+        "0x27eaAf3FD3b508f0E0261F274B2574f15B92c38e", // USDC
+        "0x26F653f8b51FA2F6c39eD6adf1A9401B8DBA8819", // DAI
       ],
       tokenOverrides: [
-        {
-          address: Address.fromString(
-            "0x82af49447d8a07e3bd95bd0d56f35241523fbab1"
-          ),
-          symbol: "WETH",
-          name: "Wrapped Ethereum",
-          decimals: BigInt.fromI32(18),
-        },
-        {
-          address: Address.fromString(
-            "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8"
-          ),
-          symbol: "USDC",
-          name: "USD Coin",
-          decimals: BigInt.fromI32(6),
-        },
+        // {
+        //   address: Address.fromString(
+        //     "0x4200000000000000000000000000000000000006"
+        //   ),
+        //   symbol: "WETH",
+        //   name: "Wrapped Ethereum",
+        //   decimals: BigInt.fromI32(18),
+        // },
+        // {
+        //   address: Address.fromString(
+        //     "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8"
+        //   ),
+        //   symbol: "USDC",
+        //   name: "USD Coin",
+        //   decimals: BigInt.fromI32(6),
+        // },
       ],
       poolsToSkip: [],
       poolMappings: [],
