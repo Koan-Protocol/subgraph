@@ -1,24 +1,22 @@
 {
-	"name": "poap-mainnet-subgraph",
-	"license": "UNLICENSED",
-	"scripts": {
-		"codegen": "graph codegen",
-		"build": "graph build",
-		"prepare:base-sepolia": "mustache config/base-sepolia.json subgraph.template.yaml > subgraph.yaml",
-		"prepare:lisk-sepolia": "mustache config/lisk-sepolia.json subgraph.template.yaml > subgraph.yaml",
-    
-		"deploy:base-sepolia": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ koaprotocol-xyz/koaprotocol",
-		"deploy:lisk-sepolia": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ koaprotocol-xyz/koaprotocol-lisk",
-
-		"create-local": "graph create --node http://localhost:8020/ poap-xyz/poap",
-		"remove-local": "graph remove --node http://localhost:8020/ poap-xyz/poap",
-		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 poap-xyz/poap"
-	},
-	"dependencies": {
-		"@graphprotocol/graph-cli": "0.51.0",
-		"@graphprotocol/graph-ts": "0.31.0"
-	},
-	"devDependencies": {
-		"mustache": "^4.0.1"
-	}
+  "name": "poap-mainnet-subgraph",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "prepare:base-sepolia": "mustache config/base-sepolia.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:lisk-sepolia": "mustache config/lisk-sepolia.json subgraph.template.yaml > subgraph.yaml",
+    "deploy:base-sepolia": "goldsky subgraph deploy koanprotocol-base-sepoli/1.0.2 --path .",
+    "deploy:lisk-sepolia": "goldsky subgraph deploy koanprotocol-lisk-sepolia/1.0.1 --path .",
+    "create-local": "graph create --node http://localhost:8020/ poap-xyz/poap",
+    "remove-local": "graph remove --node http://localhost:8020/ poap-xyz/poap",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 poap-xyz/poap"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.51.0",
+    "@graphprotocol/graph-ts": "0.31.0"
+  },
+  "devDependencies": {
+    "mustache": "^4.0.1"
+  }
 }
