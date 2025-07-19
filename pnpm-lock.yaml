@@ -44,6 +44,19 @@ importers:
         specifier: ^4.0.1
         version: 4.2.0
 
+  subgraphs/v3-amm-2:
+    dependencies:
+      '@graphprotocol/graph-cli':
+        specifier: 0.51.0
+        version: 0.51.0(@types/node@24.0.4)(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))(typescript@5.8.2)
+      '@graphprotocol/graph-ts':
+        specifier: 0.31.0
+        version: 0.31.0
+    devDependencies:
+      mustache:
+        specifier: ^4.0.1
+        version: 4.2.0
+
 packages:
 
   '@babel/code-frame@7.27.1':
@@ -3009,7 +3022,7 @@ snapshots:
 
   execa@5.1.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 2.1.0
       is-stream: 2.0.1

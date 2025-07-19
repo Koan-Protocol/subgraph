@@ -1,0 +1,13 @@
+{
+  "network": "lisk-sepolia-testnet",
+  "contracts": {
+    "factory": {
+      "address": "0x22C1f6050E56d2876009903609a2cC3fEf83B415",
+      "startBlock": 8251298
+    },
+    "nonFungiblePositionManager": {
+      "address": "0x7641035dCF910Ab905672671EF6E7426c450CC19",
+      "startBlock": 22621083
+    }
+  }
+}

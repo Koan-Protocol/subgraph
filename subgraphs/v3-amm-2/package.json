@@ -1,0 +1,22 @@
+{
+  "name": "koan-v3-amm-subgraph",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "prepare": "mustache config/$1.json subgraph.template.yaml > subgraph.yaml",
+    "deploy": "graph deploy --node $1 --ipfs $2 $3",
+    "deploy:base-sepolia": "pnpm prepare base-sepolia && goldsky subgraph deploy v3-amm-base-sepolia/1.0.0 --path .",
+    "deploy:lisk-sepolia": "pnpm prepare lisk-sepolia && goldsky subgraph deploy v3-amm-lisk-sepolia-testnet/1.0.1 --path .",
+    "create-local": "graph create --node $1 $2",
+    "remove-local": "graph remove --node $1 $2",
+    "deploy-local": "graph deploy --node $1 --ipfs $2 $3"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.51.0",
+    "@graphprotocol/graph-ts": "0.31.0"
+  },
+  "devDependencies": {
+    "mustache": "^4.0.1"
+  }
+}
