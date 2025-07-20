@@ -8,6 +8,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
+  "main": "./bin/index.js",
+  "bin": {
+    "subgraph-cli": "./bin/index.js"
+  },
   "devDependencies": {
     "prettier": "^3.6.0",
     "turbo": "^2.5.4",
@@ -16,5 +20,9 @@
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "commander": "^14.0.0"
   }
 }
