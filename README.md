@@ -56,6 +56,9 @@ Supported network Links: https://docs.goldsky.com/chains/supported-networks
 4. **Deploy locally** (if needed)
    ```bash
    pnpm deploy
+
+   goldsky subgraph deploy v3-amm-base-sepolia/1.0.0 --path . //for base-sepolia
+   goldsky subgraph deploy v3-amm-lisk-sepolia/1.0.0 --path . //for lisk-sepolia
    ```
 
 ### Submitting Changes
