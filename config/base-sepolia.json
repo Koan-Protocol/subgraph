@@ -8,14 +8,6 @@
     "nonFungiblePositionManager": {
       "address": "0xf5Ad5f275a8cdBFe5fc19A8Cb334f63Eb7c4212d",
       "startBlock": 20333760
-    },
-    "tickLens": {
-      "address": "0x0",
-      "startBlock": 0
-    },
-    "quoter": {
-      "address": "0x0",
-      "startBlock": 0
     }
   }
 }
