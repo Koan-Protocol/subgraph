@@ -3,8 +3,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
+    "prepare": "node ../../bin/index.js prepare",
     "build": "graph build"
-   
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.51.0",

@@ -6,59 +6,40 @@ const program = new Command();
 
 program
   .command("prepare")
-  .arguments("<subgraph> <network>")
-  .action((subgraph, network) => {
-    // console.log("prepare command called", { subgraph, network });
-
-    // Get the project root (assuming bin/index.js is in the root/bin folder)
+  .arguments("<network>")
+  .action((network) => {
     const projectRoot = path.dirname(__dirname);
-    const subgraphDir = path.join(projectRoot, "subgraphs", subgraph);
     const configPath = path.join(projectRoot, "config", `${network}.json`);
-    const mustachePath = path.join(
-      projectRoot,
-      "node_modules",
-      ".bin",
-      "mustache"
-    );
 
-    // console.log("Project root:", projectRoot);
-    // console.log("Subgraph directory:", subgraphDir);
-    // console.log("Config path:", configPath);
+    console.log({ configPath });
+    // const command = `npx mustache "${configPath}" subgraph.template.yaml > subgraph.yaml`;
 
-    //  const command = `node_modules/.bin/mustache ../../config/${network}.json subgraph.template.yaml > subgraph.yaml`;
+    const subgraphYamlCommand = `npx mustache "${configPath}" subgraph.template.yaml > subgraph.yaml`;
+    const subgraphConstantCommand = `npx mustache "${configPath}" src/utils/constants.template.ts > src/utils/constants.ts`;
 
-    // const command = `../../node_modules/.bin/mustache ../../config/${network}.json subgraph.template.yaml > subgraph.yaml`;
-
-    // const command = `${mustachePath} ${configPath} subgraph.template.yaml > subgraph.yaml`;
-
-    const command = `npx mustache "${configPath}" subgraph.template.yaml > subgraph.yaml`;
-    
-    console.log("Executing command:", command);
-    console.log("Current working directory:", process.cwd());
-
-    exec(command, (error, stdout, stderr) => {
+    exec(subgraphYamlCommand, (error, stdout, stderr) => {
       if (error) {
-         console.error(`Error: ${error.message}`);
-         return;
-       }
-       if (stderr) {
-         console.error(`Stderr: ${stderr}`);
-         return;
-       }
-       console.log("Template processing completed successfully!");
-       if (stdout) console.log(`Stdout: ${stdout}`);
-     });
-
-    // exec(
-    //   `node_modules/.bin/mustache ../../config/${network}.json subgraph.template.yaml > subgraph.yaml`
-    // );
-    // exec(
-    //   `node_modules/.bin/mustache ../../config/goerli.json subgraph.template.yaml > subgraph.yaml`
-    // );
-
-    // exec(
-    //   `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/src/constants/addresses.template.ts > subgraphs/${subgraph}/src/constants/addresses.ts`
-    // );
+        console.error(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Stderr: ${stderr}`);
+        return;
+      }
+      console.log("Template processing completed successfully!");
+      if (stdout) console.log(`Stdout: ${stdout}`);
+    });
+    exec(subgraphConstantCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Stderr: ${stderr}`);
+        return;
+      }
+      console.log("Constants processing completed successfully!");
+    });
   });
 
 program.parse(process.argv);

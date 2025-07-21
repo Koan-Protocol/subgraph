@@ -9,11 +9,11 @@ features:
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: { { network } }
+    network: {{network}}
     source:
-      address: "{{ contracts.factory.address }}"
+      address: "{{contracts.factory.address}}"
       abi: Factory
-      startBlock: { { contracts.factory.startBlock } }
+      startBlock: {{contracts.factory.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -38,10 +38,10 @@ dataSources:
       file: ./src/mappings/factory.ts
   - kind: ethereum/contract
     name: NonfungiblePositionManager
-    network: { { network } }
+    network: {{network}}
     source:
-      address: "{{ contracts.nonFungiblePositionManager.address }}"
-      startBlock: { { contracts.nonFungiblePositionManager.startBlock } }
+      address: "{{contracts.nonFungiblePositionManager.address}}"
+      startBlock: {{contracts.nonFungiblePositionManager.startBlock}}
       abi: NonfungiblePositionManager
     mapping:
       kind: ethereum/events
@@ -70,9 +70,9 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pool
-    network: { { network } }
+    network: {{network}}
     source:
-      abi: Pool
+        abi: Pool
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

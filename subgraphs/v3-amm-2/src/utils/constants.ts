@@ -2,9 +2,9 @@ import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Factory as FactoryContract } from "../../generated/templates/Pool/Factory";
 
 export const FACTORY_ADDRESS = Address.fromString(
-  "{{ contracts.factory.address }}"
+  "0x22C1f6050E56d2876009903609a2cC3fEf83B415"
 );
-export const NETWORK = "{{ network }}";
+export const NETWORK = "lisk-sepolia-testnet";
 
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
