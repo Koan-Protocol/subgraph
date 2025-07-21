@@ -164,6 +164,91 @@ type Tick @entity {
 	createdAtBlockNumber: BigInt!
 }
 
+type Position @entity {
+  # Positions created through NonfungiblePositionManager
+  # NFT token id
+  id: ID!
+  # owner of the NFT
+  owner: Bytes!
+  # pool position is within
+  pool: Pool!
+  # allow indexing by tokens
+  token0: Token!
+  # allow indexing by tokens
+  token1: Token!
+  # lower tick of the position
+  tickLower: Tick!
+  # upper tick of the position
+  tickUpper: Tick!
+  # total position liquidity
+  liquidity: BigInt!
+  # amount of token 0 ever deposited to position
+  depositedToken0: BigDecimal!
+  # amount of token 1 ever deposited to position
+  depositedToken1: BigDecimal!
+  # amount of token 0 ever withdrawn from position (without fees)
+  withdrawnToken0: BigDecimal!
+  # amount of token 1 ever withdrawn from position (without fees)
+  withdrawnToken1: BigDecimal!
+  # all time collect (inclusive of burn amounts)
+  collectedToken0: BigDecimal!
+  # all time collect (inclusive of burn amounts)
+  collectedToken1: BigDecimal!
+  # all time collected fees in token0
+  collectedFeesToken0: BigDecimal!
+  # all time collected fees in token1
+  collectedFeesToken1: BigDecimal!
+  # Total amount deposited in terms of USD
+  amountDepositedUSD: BigDecimal!
+  # Total amount withdrawn in terms of USD
+  amountWithdrawnUSD: BigDecimal!
+  # Total amount collected in terms of USD
+  amountCollectedUSD: BigDecimal!
+  # tx in which the position was initialized
+  transaction: Transaction!
+  # vars needed for fee computation
+  feeGrowthInside0LastX128: BigInt!
+  feeGrowthInside1LastX128: BigInt!
+  
+  # derived fields
+  increaseEvents: [IncreaseEvent!]! @derivedFrom(field: "position")
+  decreaseEvents: [IncreaseEvent!]! @derivedFrom(field: "position")
+}
+
+type PositionSnapshot @entity {
+  # <NFT token id>#<block number>
+  id: ID!
+  # owner of the NFT
+  owner: Bytes!
+  # pool the position is within
+  pool: Pool!
+  # position of which the snap was taken of
+  position: Position!
+  # block in which the snap was created
+  blockNumber: BigInt!
+  # timestamp of block in which the snap was created
+  timestamp: BigInt!
+  # total position liquidity
+  liquidity: BigInt!
+  # amount of token 0 ever deposited to position
+  depositedToken0: BigDecimal!
+  # amount of token 1 ever deposited to position
+  depositedToken1: BigDecimal!
+  # amount of token 0 ever withdrawn from position (without fees)
+  withdrawnToken0: BigDecimal!
+  # amount of token 1 ever withdrawn from position (without fees)
+  withdrawnToken1: BigDecimal!
+  # all time collected fees in token0
+  collectedFeesToken0: BigDecimal!
+  # all time collected fees in token1
+  collectedFeesToken1: BigDecimal!
+  # tx in which the snapshot was initialized
+  transaction: Transaction!
+  # internal vars needed for fee computation
+  feeGrowthInside0LastX128: BigInt!
+  feeGrowthInside1LastX128: BigInt!
+}
+
 type Transaction @entity {
 	# txn hash
 	id: ID!
@@ -495,4 +580,33 @@ type TokenHourData @entity {
 	low: BigDecimal!
 	# close price USD
 	close: BigDecimal!
+}
+
+type IncreaseEvent @entity {
+  id: ID!
+  pool: Pool!
+  tokenID: BigInt!
+  # amount of liquidity added
+  position: Position!
+  amount0: BigInt!
+  amount1: BigInt!
+  #  amountUSD: BigDecimal!
+  token0: Token!
+  token1: Token!
+  timeStamp: BigInt!
+  transaction: Transaction!
+}
+
+type DecreaseEvent @entity {
+  id: ID!
+  pool: Pool!
+  tokenID: BigInt!
+  # amount of liquidity added
+  position: Position!
+  amount0: BigInt!
+  amount1: BigInt!
+  token0: Token!
+  token1: Token!
+  timeStamp: BigInt!
+  transaction: Transaction!
 }

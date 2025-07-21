@@ -1,5 +1,5 @@
 {
-  "name": "subgrahph1",
+  "name": "koanprotocol_subgraph",
   "private": true,
   "scripts": {
     "build": "turbo run build",

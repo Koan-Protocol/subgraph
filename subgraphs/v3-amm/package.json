@@ -1,22 +1,15 @@
 {
-  "name": "poap-mainnet-subgraph",
+  "name": "v3-amm-2",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "build": "graph build",
-    "prepare:base-sepolia": "mustache config/base-sepolia.json subgraph.template.yaml > subgraph.yaml",
-    "prepare:lisk-sepolia": "mustache config/lisk-sepolia.json subgraph.template.yaml > subgraph.yaml",
-    
-    "deploy:base-sepolia": "goldsky subgraph deploy v3-amm-base-sepolia/1.0.0 --path .",
-    "deploy:lisk-sepolia": "goldsky subgraph deploy v3-amm-lisk-sepolia-testnet/1.0.1 --path .",
-    
-    "create-local:base-sepolia": "graph create --node http://localhost:8020/ v3-amm-base-sepolia",
-    "remove-local:base-sepolia": "graph remove --node http://localhost:8020/ v3-amm-base-sepolia",
-    "deploy-local:base-sepolia": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 v3-amm-base-sepolia"
+    "prepare": "node ../../bin/index.js prepare",
+    "build": "graph build"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.51.0",
-    "@graphprotocol/graph-ts": "0.31.0"
+    "@graphprotocol/graph-ts": "0.31.0",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "mustache": "^4.0.1"
