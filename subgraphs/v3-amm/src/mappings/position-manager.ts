@@ -19,7 +19,7 @@ import {
   ZERO_BD,
   ZERO_BI,
 } from "../utils/constants";
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { convertTokenToDecimal, loadTransaction } from "../utils";
 
 function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
@@ -34,16 +34,30 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
     // (e.g. 0xf7867fa19aa65298fadb8d4f72d0daed5e836f3ba01f0b9b9631cdc6c36bed40)
     if (!positionCall.reverted) {
       let positionResult = positionCall.value;
-      let poolAddress = factoryContract.getPool(
+      
+      let poolAddress = factoryContract.try_getPool(
         positionResult.value2,
         positionResult.value3,
         positionResult.value4
       );
 
+      if (poolAddress.reverted) {
+        log.warning(
+          "Pool call reverted for tokenId: {}, token0: {}, token1: {}, fee: {}",
+          [
+            tokenId.toString(),
+            positionResult.value2.toHexString(),
+            positionResult.value3.toHexString(),
+            positionResult.value4.toString(),
+          ]
+        );
+        return null;
+      }
+
       position = new Position(tokenId.toString());
       // The owner gets correctly updated in the Transfer handler
       position.owner = Address.fromString(ADDRESS_ZERO);
-      position.pool = poolAddress.toHexString();
+      position.pool = poolAddress.value.toHexString();
       position.token0 = positionResult.value2.toHexString();
       position.token1 = positionResult.value3.toHexString();
       position.tickLower = position.pool

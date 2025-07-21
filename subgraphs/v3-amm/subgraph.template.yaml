@@ -45,7 +45,7 @@ dataSources:
       abi: NonfungiblePositionManager
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/position-manager.ts
       entities: []
