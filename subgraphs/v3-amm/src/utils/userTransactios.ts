@@ -10,9 +10,9 @@ import {
 	TokenDayData,
 	TokenHourData,
 	UniswapDayData,
-	// User,
-	Collect, 
-} from "./../types/schema";
+	User,
+	Collect,
+} from "../../generated/schema";
 import { ONE_BI, ZERO_BD, ZERO_BI } from "./constants";
 
 export function getOrCreateUser(address: Address): User {
