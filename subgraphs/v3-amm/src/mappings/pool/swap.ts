@@ -1,6 +1,4 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-
-import { Bundle, Factory, Pool, Swap, Token } from '../../types/schema'
 import { Swap as SwapEvent } from '../../types/templates/Pool/Pool'
 import { convertTokenToDecimal, loadTransaction, safeDiv } from '../../utils'
 import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
@@ -18,6 +16,13 @@ import {
   getTrackedAmountUSD,
   sqrtPriceX96ToTokenPrices,
 } from '../../utils/pricing'
+import {
+	Bundle,
+	Factory,
+	Pool,
+	Swap,
+	Token,
+} from "../../../generated/schema";
 
 export function handleSwap(event: SwapEvent): void {
   handleSwapHelper(event)
@@ -100,7 +105,7 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
 
     // Update the pool with the new active liquidity, price, and tick.
     pool.liquidity = event.params.liquidity
-    pool.tick = BigInt.fromI32(event.params.tick as i32)
+    pool.tick = BigInt.fromI32(event.params.tick)
     pool.sqrtPrice = event.params.sqrtPriceX96
     pool.totalValueLockedToken0 = pool.totalValueLockedToken0.plus(amount0)
     pool.totalValueLockedToken1 = pool.totalValueLockedToken1.plus(amount1)
@@ -171,9 +176,11 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
     swap.amount0 = amount0
     swap.amount1 = amount1
     swap.amountUSD = amountTotalUSDTracked
-    swap.tick = BigInt.fromI32(event.params.tick as i32)
+    swap.tick = BigInt.fromI32(event.params.tick)
     swap.sqrtPriceX96 = event.params.sqrtPriceX96
     swap.logIndex = event.logIndex
+
+    //user tracking
 
     // interval data
     const uniswapDayData = updateUniswapDayData(event, factoryAddress)
