@@ -1,7 +1,14 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 
-import { Bundle, Factory, Mint, Pool, Tick, Token } from '../../types/schema'
-import { Mint as MintEvent } from '../../types/templates/Pool/Pool'
+import {
+	Bundle,
+	Factory,
+	Mint,
+	Pool,
+	Tick,
+	Token,
+} from "../../../generated/schema";
+import { Mint as MintEvent } from "../../../generated/templates/Pool/Pool";
 import { convertTokenToDecimal, loadTransaction } from '../../utils'
 import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
 import { ONE_BI } from '../../utils/constants'
@@ -114,13 +121,13 @@ export function handleMintHelper(event: MintEvent, subgraphConfig: SubgraphConfi
     }
 
     const amount = event.params.amount
-    lowerTick.liquidityGross = lowerTick.liquidityGross.plus(amount)
-    lowerTick.liquidityNet = lowerTick.liquidityNet.plus(amount)
-    upperTick.liquidityGross = upperTick.liquidityGross.plus(amount)
-    upperTick.liquidityNet = upperTick.liquidityNet.minus(amount)
+    lowerTick!.liquidityGross = lowerTick!.liquidityGross.plus(amount)
+    lowerTick!.liquidityNet = lowerTick!.liquidityNet.plus(amount)
+    upperTick!.liquidityGross = upperTick!.liquidityGross.plus(amount)
+    upperTick!.liquidityNet = upperTick!.liquidityNet.minus(amount)
 
-    lowerTick.save()
-    upperTick.save()
+    lowerTick!.save()
+    upperTick!.save()
 
     // TODO: Update Tick's volume, fees, and liquidity provider count. Computing these on the tick
     // level requires reimplementing some of the swapping code from v3-core.

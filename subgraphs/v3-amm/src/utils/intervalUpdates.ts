@@ -1,16 +1,16 @@
 import { ethereum } from '@graphprotocol/graph-ts'
 
 import {
-  Bundle,
-  Factory,
-  Pool,
-  PoolDayData,
-  PoolHourData,
-  Token,
-  TokenDayData,
-  TokenHourData,
-  UniswapDayData,
-} from './../types/schema'
+	Bundle,
+	Factory,
+	Pool,
+	PoolDayData,
+	PoolHourData,
+	Token,
+	TokenDayData,
+	TokenHourData,
+	UniswapDayData,
+} from "../../generated/schema";
 import { ONE_BI, ZERO_BD, ZERO_BI } from './constants'
 
 /**
