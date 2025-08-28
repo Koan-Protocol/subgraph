@@ -5,13 +5,16 @@ import { ERC20 } from "../../generated/Factory/ERC20";
 import { ERC20NameBytes } from "../../generated/Factory/ERC20NameBytes";
 import { ERC20SymbolBytes } from "../../generated/Factory/ERC20SymbolBytes";
 // import { TokenDefinition } from "./chain";
-import { getStaticDefinition, TokenDefinition } from "./staticTokenDefinition";
+import {
+	getStaticDefinition,
+	StaticTokenDefinition,
+} from "./staticTokenDefinition";
 import { isNullEthValue } from ".";
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
 	let staticDefinition = getStaticDefinition(tokenAddress);
 	if (staticDefinition != null) {
-		return (staticDefinition as TokenDefinition).symbol;
+		return (staticDefinition as StaticTokenDefinition).symbol;
 	}
 	let contract = ERC20.bind(tokenAddress);
 	let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress);
@@ -37,7 +40,7 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
 export function fetchTokenName(tokenAddress: Address): string {
 	let staticDefinition = getStaticDefinition(tokenAddress);
 	if (staticDefinition != null) {
-		return (staticDefinition as TokenDefinition).name;
+		return (staticDefinition as StaticTokenDefinition).name;
 	}
 	let contract = ERC20.bind(tokenAddress);
 	let contractNameBytes = ERC20NameBytes.bind(tokenAddress);
@@ -73,7 +76,7 @@ export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
 export function fetchTokenDecimals(tokenAddress: Address): BigInt | null {
 	let staticDefinition = getStaticDefinition(tokenAddress);
 	if (staticDefinition != null) {
-		return (staticDefinition as TokenDefinition).decimals;
+		return (staticDefinition as StaticTokenDefinition).decimals;
 	}
 	let contract = ERC20.bind(tokenAddress);
 	// try types uint8 for decimals
