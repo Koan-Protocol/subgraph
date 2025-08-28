@@ -1,8 +1,8 @@
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Swap as SwapEvent } from "../../../generated/templates/Pool/Pool";
 import { convertTokenToDecimal, loadTransaction, safeDiv } from "../../utils";
 import { getSubgraphConfig, SubgraphConfig } from "../../utils/chains";
-import { ONE_BI, ZERO_BD } from "../../utils/constants";
+import { FACTORY_ADDRESS, ONE_BI, ZERO_BD } from "../../utils/constants";
 import {
 	updatePoolDayData,
 	updatePoolHourData,
@@ -11,38 +11,27 @@ import {
 	updateUniswapDayData,
 } from "../../utils/intervalUpdates";
 import {
-	findNativePerToken,
-	getNativePriceInUSD,
+	findEthPerToken,
+	getEthPriceInUSD,
 	getTrackedAmountUSD,
 	sqrtPriceX96ToTokenPrices,
 } from "../../utils/pricing";
 import { Bundle, Factory, Pool, Swap, Token } from "../../../generated/schema";
 
 export function handleSwap(event: SwapEvent): void {
-	handleSwapHelper(event);
-}
-
-export function handleSwapHelper(
-	event: SwapEvent,
-	subgraphConfig: SubgraphConfig = getSubgraphConfig(),
-): void {
-	const factoryAddress = subgraphConfig.factoryAddress;
-	const stablecoinWrappedNativePoolAddress =
-		subgraphConfig.stablecoinWrappedNativePoolAddress;
-	const stablecoinIsToken0 = subgraphConfig.stablecoinIsToken0;
-	const wrappedNativeAddress = subgraphConfig.wrappedNativeAddress;
-	const stablecoinAddresses = subgraphConfig.stablecoinAddresses;
-	const minimumNativeLocked = subgraphConfig.minimumNativeLocked;
-	const whitelistTokens = subgraphConfig.whitelistTokens;
+	const factoryAddress =FACTORY_ADDRESS;
 
 	const bundle = Bundle.load("1")!;
-	const factory = Factory.load(factoryAddress)!;
-	const pool = Pool.load(event.address.toHexString())!;
+	const factory = Factory.load(factoryAddress.toHexString())! as Factory;
+	const pool = Pool.load(event.address.toHexString())! as Pool;
 
 	// hot fix for bad pricing
-	if (pool.id == "0x9663f2ca0454accad3e094448ea6f77443880454") {
-		return;
-	}
+	// if (
+	// 	pool.id.toHexString().toLowerCase() ==
+	// 	"0x9663f2ca0454accad3e094448ea6f77443880454"
+	// ) {
+	// 	return;
+	// }
 
 	const token0 = Token.load(pool.token0);
 	const token1 = Token.load(pool.token1);
@@ -79,7 +68,6 @@ export function handleSwapHelper(
 			token0 as Token,
 			amount1Abs,
 			token1 as Token,
-			whitelistTokens,
 		).div(BigDecimal.fromString("2"));
 		const amountTotalETHTracked = safeDiv(
 			amountTotalUSDTracked,
@@ -123,7 +111,7 @@ export function handleSwapHelper(
 
 		// Update the pool with the new active liquidity, price, and tick.
 		pool.liquidity = event.params.liquidity;
-		pool.tick = BigInt.fromI32(event.params.tick);
+		pool.tick = BigInt.fromI32(event.params.tick as i32);
 		pool.sqrtPrice = event.params.sqrtPriceX96;
 		pool.totalValueLockedToken0 = pool.totalValueLockedToken0.plus(amount0);
 		pool.totalValueLockedToken1 = pool.totalValueLockedToken1.plus(amount1);
@@ -159,23 +147,10 @@ export function handleSwapHelper(
 		pool.save();
 
 		// update USD pricing
-		bundle.ethPriceUSD = getNativePriceInUSD(
-			stablecoinWrappedNativePoolAddress,
-			stablecoinIsToken0,
-		);
+		bundle.ethPriceUSD = getEthPriceInUSD();
 		bundle.save();
-		token0.derivedETH = findNativePerToken(
-			token0 as Token,
-			wrappedNativeAddress,
-			stablecoinAddresses,
-			minimumNativeLocked,
-		);
-		token1.derivedETH = findNativePerToken(
-			token1 as Token,
-			wrappedNativeAddress,
-			stablecoinAddresses,
-			minimumNativeLocked,
-		);
+		token0.derivedETH = findEthPerToken(token0 as Token);
+		token1.derivedETH = findEthPerToken(token1 as Token);
 
 		/**
 		 * Things afffected by new USD rates
@@ -215,14 +190,15 @@ export function handleSwapHelper(
 		swap.amount0 = amount0;
 		swap.amount1 = amount1;
 		swap.amountUSD = amountTotalUSDTracked;
-		swap.tick = BigInt.fromI32(event.params.tick);
+		swap.tick = BigInt.fromI32(event.params.tick as i32);
 		swap.sqrtPriceX96 = event.params.sqrtPriceX96;
 		swap.logIndex = event.logIndex;
 
-		//user tracking
-
 		// interval data
-		const uniswapDayData = updateUniswapDayData(event, factoryAddress);
+		const uniswapDayData = updateUniswapDayData(
+			event,
+			factoryAddress.toHexString(),
+		);
 		const poolDayData = updatePoolDayData(event);
 		const poolHourData = updatePoolHourData(event);
 		const token0DayData = updateTokenDayData(token0 as Token, event);

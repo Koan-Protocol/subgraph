@@ -33,6 +33,9 @@ importers:
       '@graphprotocol/graph-ts':
         specifier: 0.31.0
         version: 0.31.0
+      assemblyscript:
+        specifier: ^0.28.4
+        version: 0.28.4
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -637,6 +640,11 @@ packages:
     resolution: {integrity: sha512-fwOQNZVTMga5KRsfY80g7cpOl4PsFQczMwHzdtgoqLXaYhkhavufKb0sB0l3T1DUxpAufA0KNhlbpuuhZUwxMA==}
     hasBin: true
 
+  assemblyscript@0.28.4:
+    resolution: {integrity: sha512-FHJ1Sm+d1siK6J+sqNUXsl9h9lzSQbnhZxG4X4Vp7LmlwD3DRvW0uk4rB4ekisw0XhrPaIKaFDqkjo1bpHzM6w==}
+    engines: {node: '>=20', npm: '>=10'}
+    hasBin: true
+
   assert-plus@1.0.0:
     resolution: {integrity: sha512-NfJ4UzBCcQGLDlQq7nHxH+tv3kyZ0hHQqF5BO6J7tNJeP5do1llPr8dZ8zHonfhAu0PHAdMkSo+8o0wxg9lZWw==}
     engines: {node: '>=0.8'}
@@ -694,6 +702,10 @@ packages:
 
   binaryen@102.0.0-nightly.20211028:
     resolution: {integrity: sha512-GCJBVB5exbxzzvyt8MGDv/MeUjs6gkXDvf4xOIItRBptYl0Tz5sm1o/uG95YK0L0VeG5ajDu3hRtkBP2kzqC5w==}
+    hasBin: true
+
+  binaryen@123.0.0-nightly.20250530:
+    resolution: {integrity: sha512-d1zPHBN5YlOd3Ff+OUxvVExuFeh8heSnqe+X3bjItFxGLvn4VGBKmrvv7pgy/cRhrIUGuPW138iaWfDhwjyDqg==}
     hasBin: true
 
   bl@1.2.3:
@@ -3009,7 +3021,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.4.1
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.2
@@ -3198,7 +3210,7 @@ snapshots:
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.4.1
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -3764,6 +3776,11 @@ snapshots:
       long: 5.3.2
       source-map-support: 0.5.21
 
+  assemblyscript@0.28.4:
+    dependencies:
+      binaryen: 123.0.0-nightly.20250530
+      long: 5.3.2
+
   assert-plus@1.0.0: {}
 
   async-function@1.0.0: {}
@@ -3813,6 +3830,8 @@ snapshots:
   binaryen@101.0.0-nightly.20210723: {}
 
   binaryen@102.0.0-nightly.20211028: {}
+
+  binaryen@123.0.0-nightly.20250530: {}
 
   bl@1.2.3:
     dependencies:
@@ -4484,7 +4503,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.6
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.4.1
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.2
