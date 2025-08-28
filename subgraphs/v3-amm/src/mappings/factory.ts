@@ -1,35 +1,27 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { populateEmptyPools } from "../backfill";
+import { populateEmptyPools,  } from "../backfill";
 import { PoolCreated } from "../../generated/Factory/Factory";
 import { Factory } from "../../generated/schema";
 import { Bundle, Pool, Token } from "../../generated/schema";
 import { Pool as PoolTemplate } from "../../generated/templates";
-import { getSubgraphConfig, SubgraphConfig } from "../utils/chains";
 import {
 	fetchTokenDecimals,
 	fetchTokenName,
 	fetchTokenSymbol,
 	fetchTokenTotalSupply,
 } from "../utils/token";
-import { ADDRESS_ZERO, ONE_BI, ZERO_BD, ZERO_BI } from "./../utils/constants";
+import { ADDRESS_ZERO, FACTORY_ADDRESS, ONE_BI, WHITELISTED_TOKEN_ADDRESSES, ZERO_BD, ZERO_BI } from "./../utils/constants";
+export const SKIP_POOLS: string[] = [];
+export const POOL_MAPINGS: Array<Address[]> = [];
 
 // The subgraph handler must have this signature to be able to handle events,
 // however, we invoke a helper in order to inject dependencies for unit tests.
 export function handlePoolCreated(event: PoolCreated): void {
-	handlePoolCreatedHelper(event);
-}
-
-// Exported for unit tests
-export function handlePoolCreatedHelper(
-	event: PoolCreated,
-	subgraphConfig: SubgraphConfig = getSubgraphConfig(),
-): void {
-	const factoryAddress = subgraphConfig.factoryAddress;
-	const whitelistTokens = subgraphConfig.whitelistTokens;
-	const tokenOverrides = subgraphConfig.tokenOverrides;
-	const poolsToSkip = subgraphConfig.poolsToSkip;
-	const poolMappings = subgraphConfig.poolMappings;
+	const factoryAddress = FACTORY_ADDRESS;
+	const whitelistTokens = WHITELISTED_TOKEN_ADDRESSES;
+	const poolsToSkip = SKIP_POOLS;
+	const poolMappings = POOL_MAPINGS;
 
 	// temp fix
 	if (poolsToSkip.includes(event.params.pool.toHexString())) {
@@ -37,9 +29,9 @@ export function handlePoolCreatedHelper(
 	}
 
 	// load factory
-	let factory = Factory.load(factoryAddress);
+	let factory = Factory.load(factoryAddress.toHexString());
 	if (factory === null) {
-		factory = new Factory(factoryAddress);
+		factory = new Factory(factoryAddress.toHexString());
 		factory.poolCount = ZERO_BI;
 		factory.totalVolumeETH = ZERO_BD;
 		factory.totalVolumeUSD = ZERO_BD;
@@ -58,7 +50,7 @@ export function handlePoolCreatedHelper(
 		bundle.ethPriceUSD = ZERO_BD;
 		bundle.save();
 
-		populateEmptyPools(event, poolMappings, whitelistTokens, tokenOverrides);
+		populateEmptyPools(event, poolMappings, whitelistTokens);
 	}
 
 	factory.poolCount = factory.poolCount.plus(ONE_BI);
@@ -70,10 +62,10 @@ export function handlePoolCreatedHelper(
 	// fetch info if null
 	if (token0 === null) {
 		token0 = new Token(event.params.token0.toHexString());
-		token0.symbol = fetchTokenSymbol(event.params.token0, tokenOverrides);
-		token0.name = fetchTokenName(event.params.token0, tokenOverrides);
+		token0.symbol = fetchTokenSymbol(event.params.token0);
+		token0.name = fetchTokenName(event.params.token0);
 		token0.totalSupply = fetchTokenTotalSupply(event.params.token0);
-		const decimals = fetchTokenDecimals(event.params.token0, tokenOverrides);
+		const decimals = fetchTokenDecimals(event.params.token0);
 
 		// bail if we couldn't figure out the decimals
 		if (decimals === null) {
@@ -97,10 +89,10 @@ export function handlePoolCreatedHelper(
 
 	if (token1 === null) {
 		token1 = new Token(event.params.token1.toHexString());
-		token1.symbol = fetchTokenSymbol(event.params.token1, tokenOverrides);
-		token1.name = fetchTokenName(event.params.token1, tokenOverrides);
+		token1.symbol = fetchTokenSymbol(event.params.token1);
+		token1.name = fetchTokenName(event.params.token1);
 		token1.totalSupply = fetchTokenTotalSupply(event.params.token1);
-		const decimals = fetchTokenDecimals(event.params.token1, tokenOverrides);
+		const decimals = fetchTokenDecimals(event.params.token1);
 		// bail if we couldn't figure out the decimals
 		if (decimals === null) {
 			log.debug("mybug the decimal on token 0 was null", []);
@@ -166,3 +158,4 @@ export function handlePoolCreatedHelper(
 	token1.save();
 	factory.save();
 }
+

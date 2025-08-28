@@ -1,7 +1,6 @@
-import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import {  BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Swap as SwapEvent } from "../../../generated/templates/Pool/Pool";
 import { convertTokenToDecimal, loadTransaction, safeDiv } from "../../utils";
-import { getSubgraphConfig, SubgraphConfig } from "../../utils/chains";
 import { FACTORY_ADDRESS, ONE_BI, ZERO_BD } from "../../utils/constants";
 import {
 	updatePoolDayData,

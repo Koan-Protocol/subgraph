@@ -10,7 +10,6 @@ import {
 } from "../../../generated/schema";
 import { Burn as BurnEvent } from "../../../generated/templates/Pool/Pool";
 import { convertTokenToDecimal, loadTransaction } from "../../utils";
-import { getSubgraphConfig, SubgraphConfig } from "../../utils/chains";
 import { FACTORY_ADDRESS, ONE_BI } from "../../utils/constants";
 import {
 	updatePoolDayData,

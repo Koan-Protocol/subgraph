@@ -31,3 +31,5 @@ export const MINIMUM_ETH_LOCKED = BigDecimal.fromString(
 export const NATIVE_PRICE_POOL = Address.fromString("{{ nativePricePool }}")
 	.toHex()
 	.toLowerCase();
+
+	
