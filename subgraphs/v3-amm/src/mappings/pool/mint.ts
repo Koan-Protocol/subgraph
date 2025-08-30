@@ -19,6 +19,7 @@ import {
 	updateUniswapDayData,
 } from "../../utils/intervalUpdates";
 import { createTick } from "../../utils/tick";
+import { updateUserMintActivity } from "../../utils/user";
 
 export function handleMint(event: MintEvent): void {
 	const factoryAddress = FACTORY_ADDRESS;
@@ -44,6 +45,15 @@ export function handleMint(event: MintEvent): void {
 		const amountUSD = amount0
 			.times(token0.derivedETH.times(bundle.ethPriceUSD))
 			.plus(amount1.times(token1.derivedETH.times(bundle.ethPriceUSD)));
+
+		// === USER TRACKING === //
+		// Track mint activity for the position owner
+		const transaction = loadTransaction(event);
+		updateUserMintActivity(
+			event.params.owner,
+			amountUSD,
+		);
+		// === END USER TRACKING === //
 
 		// reset tvl aggregates until new amounts calculated
 		factory.totalValueLockedETH = factory.totalValueLockedETH.minus(
@@ -97,7 +107,7 @@ export function handleMint(event: MintEvent): void {
 			bundle.ethPriceUSD,
 		);
 
-		const transaction = loadTransaction(event);
+		// const transaction = loadTransaction(event);
 		const mint = new Mint(
 			transaction.id.toString() + "-" + event.logIndex.toString(),
 		);

@@ -16,6 +16,7 @@ import {
 	sqrtPriceX96ToTokenPrices,
 } from "../../utils/pricing";
 import { Bundle, Factory, Pool, Swap, Token } from "../../../generated/schema";
+import { updateUserSwapActivity } from "../../utils/user";
 
 export function handleSwap(event: SwapEvent): void {
 	const factoryAddress =FACTORY_ADDRESS;
@@ -82,6 +83,15 @@ export function handleSwap(event: SwapEvent): void {
 		const feesUSD = amountTotalUSDTracked
 			.times(pool.feeTier.toBigDecimal())
 			.div(BigDecimal.fromString("1000000"));
+
+		// === USER TRACKING === //
+		// Track the swap activity for the transaction origin (the actual user)
+		const transaction = loadTransaction(event);
+		updateUserSwapActivity(
+			event.transaction.from,
+			amountTotalUSDTracked,
+		);
+		// === END USER TRACKING === //
 
 		// global updates
 		factory.txCount = factory.txCount.plus(ONE_BI);
@@ -176,7 +186,7 @@ export function handleSwap(event: SwapEvent): void {
 			.times(bundle.ethPriceUSD);
 
 		// create Swap event
-		const transaction = loadTransaction(event);
+		// const transaction = loadTransaction(event);
 		const swap = new Swap(transaction.id + "-" + event.logIndex.toString());
 		swap.transaction = transaction.id;
 		swap.timestamp = transaction.timestamp;

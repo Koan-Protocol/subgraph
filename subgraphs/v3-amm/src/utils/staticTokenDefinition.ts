@@ -51,7 +51,7 @@ export class StaticTokenDefinition {
 
 	// Get all tokens with a static definition
 	static getStaticDefinitions(): Array<StaticTokenDefinition> {
-		let staticDefinitions = new Array<StaticTokenDefinition>(6);
+		let staticDefinitions = new Array<StaticTokenDefinition>();
 
 		// Add DGD
 		let tokenDGD = new StaticTokenDefinition(
