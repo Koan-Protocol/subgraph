@@ -9,30 +9,9 @@ export function loadUser(address: Address): User {
 		user.swapCount = ZERO_BI;
 		user.mintCount = ZERO_BI;
 		user.increaseCount = ZERO_BI;
-		// user.burnCount = ZERO_BI;
-		// user.collectCount = ZERO_BI;
-		// user.decreaseCount = ZERO_BI;
-
+		user.totalVolumeUSD= ZERO_BD
 		user.totalSwapVolumeUSD = ZERO_BD;
 		user.totalMintVolumeUSD = ZERO_BD;
-		// user.totalBurnVolumeUSD = ZERO_BD;
-		// user.totalCollectVolumeUSD = ZERO_BD;
-		// user.totalPositionVolumeUSD = ZERO_BD;
-		// user.totalFeesCollectedUSD = ZERO_BD;
-		// user.totalFeesEarnedUSD = ZERO_BD;
-
-		// user.activePositionCount = ZERO_BI;
-		// user.totalLiquidityUSD = ZERO_BD;
-		// user.totalVolumeUSD = ZERO_BD;
-
-		// user.firstTransactionTimestamp = ZERO_BI;
-		// user.lastTransactionTimestamp = ZERO_BI;
-
-		// user.rewardPoints = ZERO_BD;
-		// user.lastRewardUpdate = ZERO_BI;
-
-		// user.uniquePoolsInteracted = ZERO_BI;
-		// user.uniqueTokensTraded = ZERO_BI;
 
 		user.save();
 	}

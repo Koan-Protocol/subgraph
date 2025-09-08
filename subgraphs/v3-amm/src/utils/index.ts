@@ -115,7 +115,6 @@ export function bigDecimalExp18(): BigDecimal {
 	return BigDecimal.fromString("1000000000000000000");
 }
 
-
 export function convertTokenToDecimal(
 	tokenAmount: BigInt,
 	exchangeDecimals: BigInt,
