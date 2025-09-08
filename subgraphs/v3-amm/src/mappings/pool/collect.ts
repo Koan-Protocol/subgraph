@@ -9,8 +9,7 @@ import {
 } from "../../../generated/schema";
 import { Collect as CollectEvent } from "../../../generated/templates/Pool/Pool";
 import { convertTokenToDecimal, loadTransaction } from "../../utils";
-import { getSubgraphConfig, SubgraphConfig } from "../../utils/chains";
-import { ONE_BI } from "../../utils/constants";
+import { FACTORY_ADDRESS, ONE_BI } from "../../utils/constants";
 import {
 	updatePoolDayData,
 	updatePoolHourData,
@@ -21,23 +20,15 @@ import {
 import { getTrackedAmountUSD } from "../../utils/pricing";
 
 export function handleCollect(event: CollectEvent): void {
-	handleCollectHelper(event);
-}
-
-export function handleCollectHelper(
-	event: CollectEvent,
-	subgraphConfig: SubgraphConfig = getSubgraphConfig(),
-): void {
-	const factoryAddress = subgraphConfig.factoryAddress;
-	const whitelistTokens = subgraphConfig.whitelistTokens;
+	const factoryAddress = FACTORY_ADDRESS;
 
 	const bundle = Bundle.load("1")!;
-	const pool = Pool.load(event.address.toHexString());
+	const pool = Pool.load(event.address.toHexString())!;
 	if (pool == null) {
 		return;
 	}
 	const transaction = loadTransaction(event);
-	const factory = Factory.load(factoryAddress)!;
+	const factory = Factory.load(factoryAddress.toHexString())!;
 
 	const token0 = Token.load(pool.token0);
 	const token1 = Token.load(pool.token1);
@@ -59,7 +50,6 @@ export function handleCollectHelper(
 		token0 as Token,
 		collectedAmountToken1,
 		token1 as Token,
-		whitelistTokens,
 	);
 
 	// Reset tvl aggregates until new amounts calculated
@@ -129,7 +119,7 @@ export function handleCollectHelper(
 	collect.tickUpper = BigInt.fromI32(event.params.tickUpper);
 	collect.logIndex = event.logIndex;
 
-	updateUniswapDayData(event, factoryAddress);
+	updateUniswapDayData(event, factoryAddress.toHexString());
 	updatePoolDayData(event);
 	updatePoolHourData(event);
 	updateTokenDayData(token0 as Token, event);
@@ -145,3 +135,4 @@ export function handleCollectHelper(
 
 	return;
 }
+

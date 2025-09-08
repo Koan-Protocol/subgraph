@@ -9,7 +9,7 @@ program
   .arguments("<network>")
   .action((network) => {
     const projectRoot = path.dirname(__dirname);
-    const configPath = path.join(projectRoot, "config", `${network}.js`);
+    const configPath = path.join(projectRoot, "config", `${network}.json`);
 
     console.log({ configPath });
     // const command = `npx mustache "${configPath}" subgraph.template.yaml > subgraph.yaml`;

@@ -401,6 +401,7 @@ type User @entity {
 	mintCount: BigInt!
 	increaseCount: BigInt!
 
+	totalVolumeUSD: BigDecimal!
 	totalSwapVolumeUSD: BigDecimal!
 	totalMintVolumeUSD: BigDecimal!
 }

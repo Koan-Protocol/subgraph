@@ -1,0 +1,26 @@
+{
+	"network": "base-sepolia",
+	"contracts": {
+		"factory": {
+			"address": "0x4E02A5e71197fAE4925b23CEdc35D987a4409DB0",
+			"startBlock": 20333760
+		},
+		"nonFungiblePositionManager": {
+			"address": "0xf5Ad5f275a8cdBFe5fc19A8Cb334f63Eb7c4212d",
+			"startBlock": 20333760
+		}
+	},
+	"whitelistedTokenAddresses": [
+		"0x4200000000000000000000000000000000000006",
+		"0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+		"0x27eaAf3FD3b508f0E0261F274B2574f15B92c38e",
+		"0x7f31d5064C7914e417091A39eceBb81bAc582536"
+	],
+	"stableTokenAddresses": [
+		"0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+		"0x27eaAf3FD3b508f0E0261F274B2574f15B92c38e"
+	],
+	"nativePricePool": "0x2ca52156682e4a80aef0500de2ff41a43b98bccd",
+	"minimumEthLocked": 1,
+	"nativeAddress": "0x4200000000000000000000000000000000000006"
+}

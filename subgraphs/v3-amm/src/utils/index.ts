@@ -1,7 +1,7 @@
 import { BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
 
 import { Transaction } from "../../generated/schema";
-import { ONE_BD, ZERO_BD, ZERO_BI } from "../utils/constants";
+import { ONE_BD, ONE_BI, ZERO_BD, ZERO_BI } from "../utils/constants";
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
 	let resultString = "1";
@@ -51,6 +51,27 @@ export function fastExponentiation(value: BigDecimal, power: i32): BigDecimal {
 	if (power % 2 == 1) {
 		result = result.times(value);
 	}
+	return result;
+}
+
+export function bigDecimalExponated(
+	value: BigDecimal,
+	power: BigInt,
+): BigDecimal {
+	if (power.equals(ZERO_BI)) {
+		return ONE_BD;
+	}
+	let negativePower = power.lt(ZERO_BI);
+	let result = ZERO_BD.plus(value);
+	let powerAbs = power.abs();
+	for (let i = ONE_BI; i.lt(powerAbs); i = i.plus(ONE_BI)) {
+		result = result.times(value);
+	}
+
+	if (negativePower) {
+		result = safeDiv(ONE_BD, result);
+	}
+
 	return result;
 }
 
@@ -105,7 +126,7 @@ export function convertTokenToDecimal(
 }
 
 export function convertEthToDecimal(eth: BigInt): BigDecimal {
-	return eth.toBigDecimal().div(exponentToBigDecimal(18));
+	return eth.toBigDecimal().div(exponentToBigDecimal(BigInt.fromI32(18)));
 }
 
 export function loadTransaction(event: ethereum.Event): Transaction {
