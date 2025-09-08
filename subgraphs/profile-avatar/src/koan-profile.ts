@@ -1,152 +1,91 @@
 import {
-  Approval as ApprovalEvent,
-  ApprovalForAll as ApprovalForAllEvent,
-  BatchMetadataUpdate as BatchMetadataUpdateEvent,
-  MetadataUpdate as MetadataUpdateEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
-  PFUpdated as PFUpdatedEvent,
-  Paused as PausedEvent,
-  Transfer as TransferEvent,
-  Unpaused as UnpausedEvent
-} from "../generated/KoanProfile/KoanProfile"
-import {
-  Approval,
-  ApprovalForAll,
-  BatchMetadataUpdate,
-  MetadataUpdate,
-  OwnershipTransferred,
-  PFUpdated,
-  Paused,
-  Transfer,
-  Unpaused
-} from "../generated/schema"
-
-export function handleApproval(event: ApprovalEvent): void {
-  let entity = new Approval(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
-  entity.tokenId = event.params.tokenId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
-  let entity = new ApprovalForAll(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.operator = event.params.operator
-  entity.approved = event.params.approved
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleBatchMetadataUpdate(
-  event: BatchMetadataUpdateEvent
-): void {
-  let entity = new BatchMetadataUpdate(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._fromTokenId = event.params._fromTokenId
-  entity._toTokenId = event.params._toTokenId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleMetadataUpdate(event: MetadataUpdateEvent): void {
-  let entity = new MetadataUpdate(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._tokenId = event.params._tokenId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
+	PFUpdated as PFUpdatedEvent,
+	Transfer as TransferEvent,
+} from "../generated/KoanProfile/KoanProfile";
+import { PFUpdated, Transfer, User, Token } from "../generated/schema";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 
 export function handlePFUpdated(event: PFUpdatedEvent): void {
-  let entity = new PFUpdated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.user = event.params.user
-  entity.tokenId = event.params.tokenId
+	// Update user's current PFP
+	let user = getOrCreateUser(event.params.user, event.block.timestamp);
+	let token = getOrCreateToken(event.params.tokenId, event.block.timestamp);
+	
+	user.currentPFP = token.id;
+	user.updatedAt = event.block.timestamp;
+	user.save();
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handlePaused(event: PausedEvent): void {
-  let entity = new Paused(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+	// Save event
+	let entity = new PFUpdated(
+		event.transaction.hash.concatI32(event.logIndex.toI32()),
+	);
+	entity.user = event.params.user;
+	entity.tokenId = event.params.tokenId;
+	entity.blockNumber = event.block.number;
+	entity.blockTimestamp = event.block.timestamp;
+	entity.transactionHash = event.transaction.hash;
+	entity.save();
 }
 
 export function handleTransfer(event: TransferEvent): void {
-  let entity = new Transfer(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.from = event.params.from
-  entity.to = event.params.to
-  entity.tokenId = event.params.tokenId
+	let token = getOrCreateToken(event.params.tokenId, event.block.timestamp);
+	
+	// Handle mint (from zero address)
+	if (event.params.from == Address.zero()) {
+		let toUser = getOrCreateUser(event.params.to, event.block.timestamp);
+		token.owner = toUser.id;
+		token.createdAt = event.block.timestamp;
+		toUser.tokenCount = toUser.tokenCount.plus(BigInt.fromI32(1));
+		toUser.save();
+	} else {
+		// Handle regular transfer
+		let fromUser = getOrCreateUser(event.params.from, event.block.timestamp);
+		let toUser = getOrCreateUser(event.params.to, event.block.timestamp);
+		
+		token.owner = toUser.id;
+		fromUser.tokenCount = fromUser.tokenCount.minus(BigInt.fromI32(1));
+		toUser.tokenCount = toUser.tokenCount.plus(BigInt.fromI32(1));
+		
+		fromUser.updatedAt = event.block.timestamp;
+		toUser.updatedAt = event.block.timestamp;
+		fromUser.save();
+		toUser.save();
+	}
+	
+	token.updatedAt = event.block.timestamp;
+	token.transferCount = token.transferCount.plus(BigInt.fromI32(1));
+	token.save();
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+	// Save event
+	let entity = new Transfer(
+		event.transaction.hash.concatI32(event.logIndex.toI32()),
+	);
+	entity.from = event.params.from;
+	entity.to = event.params.to;
+	entity.tokenId = event.params.tokenId;
+	entity.blockNumber = event.block.number;
+	entity.blockTimestamp = event.block.timestamp;
+	entity.transactionHash = event.transaction.hash;
+	entity.save();
 }
 
-export function handleUnpaused(event: UnpausedEvent): void {
-  let entity = new Unpaused(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
+function getOrCreateUser(address: Address, timestamp: BigInt): User {
+	let user = User.load(address.toHexString());
+	if (!user) {
+		user = new User(address.toHexString());
+		user.tokenCount = BigInt.zero();
+		user.createdAt = timestamp;
+		user.updatedAt = timestamp;
+	}
+	return user;
+}
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+function getOrCreateToken(tokenId: BigInt, timestamp: BigInt): Token {
+	let token = Token.load(tokenId.toString());
+	if (!token) {
+		token = new Token(tokenId.toString());
+		token.transferCount = BigInt.zero();
+		token.createdAt = timestamp;
+		token.updatedAt = timestamp;
+	}
+	return token;
 }

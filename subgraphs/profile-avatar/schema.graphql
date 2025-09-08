@@ -1,61 +1,25 @@
-type Approval @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type User @entity {
+  id: ID!                      # wallet address
+  ownedTokens: [Token!]!       @derivedFrom(field: "owner")
+  currentPFP: Token
+  tokenCount: BigInt!          # number of tokens owned
+  createdAt: BigInt!           # first interaction timestamp
+  updatedAt: BigInt!           # last interaction timestamp
 }
 
-type ApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type BatchMetadataUpdate @entity(immutable: true) {
-  id: Bytes!
-  _fromTokenId: BigInt! # uint256
-  _toTokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type MetadataUpdate @entity(immutable: true) {
-  id: Bytes!
-  _tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Token @entity {
+  id: ID!                      # tokenId
+  uri: String
+  owner: User!
+  createdAt: BigInt!           # mint timestamp
+  updatedAt: BigInt!           # last transfer timestamp
+  transferCount: BigInt!       # number of transfers
 }
 
 type PFUpdated @entity(immutable: true) {
   id: Bytes!
   user: Bytes! # address
   tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Paused @entity(immutable: true) {
-  id: Bytes!
-  account: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -71,10 +35,3 @@ type Transfer @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type Unpaused @entity(immutable: true) {
-  id: Bytes!
-  account: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
